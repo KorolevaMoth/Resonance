@@ -1,6 +1,7 @@
 package kmoth.resonance.client;
 
 import kmoth.resonance.network.BladeResonancePayload;
+import kmoth.resonance.network.UnlockBladeResonancePayload;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -23,6 +24,13 @@ public class ClientKeyHandler {
 
             PacketDistributor.sendToServer(
                     new BladeResonancePayload()
+            );
+        }
+
+        while (ModKeyMappings.UNLOCK_BLADE_RESONANCE.consumeClick()) {
+
+            PacketDistributor.sendToServer(
+                    new UnlockBladeResonancePayload()
             );
         }
     }

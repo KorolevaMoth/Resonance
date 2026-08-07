@@ -20,11 +20,19 @@ public class ModKeyMappings {
                     GLFW.GLFW_KEY_R,
                     "key.categories.resonance"
             );
+    public static final KeyMapping UNLOCK_BLADE_RESONANCE =
+            new KeyMapping(
+                    "key.resonance.unlock_blade_resonance",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_U,
+                    "key.categories.resonance"
+            );
 
     @SubscribeEvent
     public static void registerKeyMappings(
             RegisterKeyMappingsEvent event
     ) {
         event.register(BLADE_RESONANCE);
+        event.register(UNLOCK_BLADE_RESONANCE);
     }
 }

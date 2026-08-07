@@ -15,6 +15,16 @@ public class BladeResonanceSkill {
 
     public static void activate(ServerPlayer player) {
 
+        // Check whether the player has unlocked Blade Resonance.
+        if (!BladeResonanceUnlocks.isUnlocked(player)) {
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Blade Resonance is locked."
+                    )
+            );
+            return;
+        }
+
         long currentTime = player.level().getGameTime();
 
         long cooldownTicks =

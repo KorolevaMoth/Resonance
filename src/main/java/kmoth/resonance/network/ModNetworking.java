@@ -1,6 +1,8 @@
 package kmoth.resonance.network;
 
 import kmoth.resonance.skill.BladeResonanceSkill;
+import kmoth.resonance.skill.BladeResonanceUnlocks;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -20,8 +22,20 @@ public class ModNetworking {
                 BladeResonancePayload.TYPE,
                 BladeResonancePayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> {
-                    if (context.player() instanceof net.minecraft.server.level.ServerPlayer player) {
+
+                    if (context.player() instanceof ServerPlayer player) {
                         BladeResonanceSkill.activate(player);
+                    }
+                })
+        );
+
+        registrar.playToServer(
+                UnlockBladeResonancePayload.TYPE,
+                UnlockBladeResonancePayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> {
+
+                    if (context.player() instanceof ServerPlayer player) {
+                        BladeResonanceUnlocks.tryUnlock(player);
                     }
                 })
         );
