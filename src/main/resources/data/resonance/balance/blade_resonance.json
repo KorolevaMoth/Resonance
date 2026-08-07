@@ -1,5 +1,5 @@
 {
-  "cooldown_seconds": 3,
-  "damage_bonus": 5,
+  "cooldown_seconds": 6,
+  "damage_bonus": 3,
   "skill_point_cost": 1
 }
