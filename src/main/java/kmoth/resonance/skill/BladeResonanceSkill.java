@@ -1,5 +1,6 @@
 package kmoth.resonance.skill;
 
+import kmoth.resonance.data.BalanceDataLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -15,11 +16,15 @@ public class BladeResonanceSkill {
     public static void activate(ServerPlayer player) {
 
         long currentTime = player.level().getGameTime();
-        long cooldownTicks = BladeResonanceData.cooldownSeconds * 20L;
+
+        long cooldownTicks =
+                BalanceDataLoader.bladeResonance.cooldown_seconds * 20L;
 
         Long previousUse = COOLDOWNS.get(player.getUUID());
 
-        if (previousUse != null && currentTime - previousUse < cooldownTicks) {
+        // Check whether Blade Resonance is still on cooldown.
+        if (previousUse != null &&
+                currentTime - previousUse < cooldownTicks) {
 
             long remainingTicks =
                     cooldownTicks - (currentTime - previousUse);
@@ -38,9 +43,10 @@ public class BladeResonanceSkill {
             return;
         }
 
+        // Start the cooldown.
         COOLDOWNS.put(player.getUUID(), currentTime);
 
-        // For our prototype, the buff lasts 5 seconds.
+        // Blade Resonance remains active for 5 seconds.
         ACTIVE_UNTIL.put(
                 player.getUUID(),
                 currentTime + (5 * 20L)
@@ -49,7 +55,7 @@ public class BladeResonanceSkill {
         player.sendSystemMessage(
                 Component.literal(
                         "Blade Resonance activated! +"
-                                + BladeResonanceData.damageBonus
+                                + BalanceDataLoader.bladeResonance.damage_bonus
                                 + " damage"
                 )
         );
