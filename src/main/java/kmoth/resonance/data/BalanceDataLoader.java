@@ -1,6 +1,7 @@
 package kmoth.resonance.data;
 
 import com.google.gson.Gson;
+import kmoth.resonance.progression.ProgressionData;
 import kmoth.resonance.skill.BladeResonanceData;
 
 import java.io.InputStream;
@@ -10,11 +11,17 @@ public class BalanceDataLoader {
 
     private static final Gson GSON = new Gson();
 
+    // Data loaded from our JSON files
     public static BladeResonanceData bladeResonance;
+    public static ProgressionData progression;
 
     public static void load() {
 
         try {
+
+            // ==========================================
+            // LOAD BLADE RESONANCE DATA
+            // ==========================================
 
             InputStream stream =
                     BalanceDataLoader.class.getResourceAsStream(
@@ -42,10 +49,42 @@ public class BalanceDataLoader {
                     "[Resonance] Blade Resonance data loaded."
             );
 
+
+            // ==========================================
+            // LOAD PROGRESSION DATA
+            // ==========================================
+
+            InputStream progressionStream =
+                    BalanceDataLoader.class.getResourceAsStream(
+                            "/data/resonance/balance/progression.json"
+                    );
+
+            if (progressionStream == null) {
+                throw new RuntimeException(
+                        "Could not find progression.json"
+                );
+            }
+
+            InputStreamReader progressionReader =
+                    new InputStreamReader(progressionStream);
+
+            progression =
+                    GSON.fromJson(
+                            progressionReader,
+                            ProgressionData.class
+                    );
+
+            progressionReader.close();
+
+            System.out.println(
+                    "[Resonance] Progression data loaded."
+            );
+
+
         } catch (Exception e) {
 
             throw new RuntimeException(
-                    "Failed to load Blade Resonance data",
+                    "Failed to load Resonance balance data",
                     e
             );
         }
