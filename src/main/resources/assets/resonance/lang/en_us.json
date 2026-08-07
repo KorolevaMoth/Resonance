@@ -1,5 +1,5 @@
 {
-  "itemGroup.resonance": "Example Mod Tab",
+  "itemGroup.resonance": "Resonance",
   "block.resonance.example_block": "Example Block",
   "item.resonance.example_item": "Example Item",
 
@@ -9,5 +9,11 @@
   "resonance.configuration.items": "Item List",
   "resonance.configuration.logDirtBlock": "Log Dirt Block",
   "resonance.configuration.magicNumberIntroduction": "Magic Number Text",
-  "resonance.configuration.magicNumber": "Magic Number"
+  "resonance.configuration.magicNumber": "Magic Number",
+
+  "entity.resonance.corrupted_bio_slime": "Corrupted Bio-Slime",
+  "item.resonance.corrupted_bio_slime_spawn_egg": "Corrupted Bio-Slime Spawn Egg",
+  "key.resonance.blade_resonance": "Blade Resonance",
+  "key.resonance.unlock_blade_resonance": "Unlock Blade Resonance",
+  "key.categories.resonance": "Resonance"
 }
