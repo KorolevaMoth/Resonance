@@ -152,7 +152,7 @@ public class SkillTreeScreen extends Screen {
                         )
                         .build();
 
-        pulseButton.active =
+        guardButton.active =
                 ClientSkillState.isBladeResonanceUnlocked();
 
         this.addRenderableWidget(guardButton);
