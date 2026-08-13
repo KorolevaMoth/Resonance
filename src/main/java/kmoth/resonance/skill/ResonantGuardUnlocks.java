@@ -1,59 +1,69 @@
 package kmoth.resonance.skill;
 
 import kmoth.resonance.data.BalanceDataLoader;
+import kmoth.resonance.network.SkillStateSync;
 import kmoth.resonance.progression.ResonanceProgression;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import kmoth.resonance.network.SkillStateSync;
 
-public class BladeResonanceUnlocks {
+public class ResonantGuardUnlocks {
 
     public static boolean isUnlocked(ServerPlayer player) {
-
         return PlayerSkillState.isUnlocked(
                 player,
-                ResonanceSkill.BLADE_RESONANCE
+                ResonanceSkill.RESONANT_GUARD
         );
     }
 
     public static void tryUnlock(ServerPlayer player) {
 
-        // ==========================================
-        // ALREADY UNLOCKED -> EQUIP
-        // ==========================================
-
         if (isUnlocked(player)) {
 
             PlayerSkillState.equip(
                     player,
-                    ResonanceSkill.BLADE_RESONANCE
-
+                    ResonanceSkill.RESONANT_GUARD
             );
+
             SkillStateSync.syncToClient(player);
 
             player.sendSystemMessage(
                     Component.literal(
-                            "Blade Resonance equipped."
+                            "Resonant Guard equipped."
                     )
             );
 
             return;
         }
 
+        if (!PlayerSkillState.isUnlocked(
+                player,
+                ResonanceSkill.BLADE_RESONANCE
+        )) {
 
-        // ==========================================
-        // GET DATA-DRIVEN COST
-        // ==========================================
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Blade Resonance must be unlocked first."
+                    )
+            );
+
+            return;
+        }
 
         int cost =
                 BalanceDataLoader
-                        .bladeResonance
+                        .resonantGuard
                         .skill_point_cost;
 
+        if (cost < 0) {
 
-        // ==========================================
-        // ATTEMPT PURCHASE
-        // ==========================================
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Resonant Guard has an invalid skill-point cost."
+                    )
+            );
+
+            return;
+        }
 
         boolean success =
                 ResonanceProgression.spendSkillPoints(
@@ -66,7 +76,7 @@ public class BladeResonanceUnlocks {
             player.sendSystemMessage(
                     Component.literal(
                             "Not enough Skill Points. "
-                                    + "Blade Resonance costs "
+                                    + "Resonant Guard costs "
                                     + cost
                                     + "."
                     )
@@ -75,39 +85,27 @@ public class BladeResonanceUnlocks {
             return;
         }
 
-
-        // ==========================================
-        // UNLOCK
-        // ==========================================
-
         PlayerSkillState.unlock(
                 player,
-                ResonanceSkill.BLADE_RESONANCE
+                ResonanceSkill.RESONANT_GUARD
         );
-
-
-        // ==========================================
-        // AUTO-EQUIP
-        // ==========================================
 
         PlayerSkillState.equip(
                 player,
-                ResonanceSkill.BLADE_RESONANCE
+                ResonanceSkill.RESONANT_GUARD
         );
 
         SkillStateSync.syncToClient(player);
 
-
         player.sendSystemMessage(
                 Component.literal(
-                        "Blade Resonance unlocked and equipped "
-                                + "for "
+                        "Resonant Guard unlocked and equipped for "
                                 + cost
                                 + " Skill Point(s)!"
                 )
         );
     }
 
-    private BladeResonanceUnlocks() {
+    private ResonantGuardUnlocks() {
     }
 }

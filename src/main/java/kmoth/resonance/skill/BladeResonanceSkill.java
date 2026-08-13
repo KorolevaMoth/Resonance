@@ -15,13 +15,31 @@ public class BladeResonanceSkill {
 
     public static void activate(ServerPlayer player) {
 
-        // Check whether the player has unlocked Blade Resonance.
-        if (!BladeResonanceUnlocks.isUnlocked(player)) {
+        // Is it unlocked?
+        if (!PlayerSkillState.isUnlocked(
+                player,
+                ResonanceSkill.BLADE_RESONANCE
+        )) {
+
             player.sendSystemMessage(
                     Component.literal(
                             "Blade Resonance is locked."
                     )
             );
+
+            return;
+        }
+
+        // Is it currently equipped?
+        if (PlayerSkillState.getEquipped(player)
+                != ResonanceSkill.BLADE_RESONANCE) {
+
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Blade Resonance is not equipped."
+                    )
+            );
+
             return;
         }
 

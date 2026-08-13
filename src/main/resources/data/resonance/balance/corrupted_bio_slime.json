@@ -1,3 +1,5 @@
 {
-  "health_multiplier": 0.5
+  "tier": "weak",
+  "health_multiplier": 1.0,
+  "xp_multiplier": 1.0
 }

@@ -1,6 +1,7 @@
 package kmoth.resonance.progression;
 
 import kmoth.resonance.data.BalanceDataLoader;
+import kmoth.resonance.network.SkillStateSync;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -14,53 +15,103 @@ public class ResonanceProgression {
     private static final Map<UUID, Integer> LEVEL = new HashMap<>();
     private static final Map<UUID, Integer> SKILL_POINTS = new HashMap<>();
 
+
     public static void addXp(ServerPlayer player, int amount) {
 
         UUID id = player.getUUID();
 
-        int currentXp = XP.getOrDefault(id, 0);
-        int currentLevel = LEVEL.getOrDefault(id, 1);
+        int currentXp =
+                XP.getOrDefault(id, 0);
+
+        int currentLevel =
+                LEVEL.getOrDefault(id, 1);
 
         currentXp += amount;
 
-        if (currentLevel == 1
-                && currentXp >= BalanceDataLoader.progression.xp_to_level_2) {
 
-            currentLevel = 2;
+        // ==========================================
+        // CHECK FOR MULTIPLE LEVEL UPS
+        // ==========================================
+
+        int[] requirements =
+                BalanceDataLoader.progression.xp_requirements;
+
+        while (
+                currentLevel < requirements.length
+                        && currentXp >= requirements[currentLevel]
+        ) {
+
+            currentLevel++;
 
             int currentSkillPoints =
                     SKILL_POINTS.getOrDefault(id, 0);
 
             SKILL_POINTS.put(
                     id,
-                    currentSkillPoints + 1
+                    currentSkillPoints
+                            + BalanceDataLoader
+                            .progression
+                            .skill_points_per_level
             );
 
             player.sendSystemMessage(
                     Component.literal(
-                            "Resonance Level Up! Level 2 reached."
+                            "Resonance Level Up! Level "
+                                    + currentLevel
+                                    + " reached."
                     )
             );
 
             player.sendSystemMessage(
                     Component.literal(
-                            "You gained 1 Skill Point."
+                            "+"
+                                    + BalanceDataLoader
+                                    .progression
+                                    .skill_points_per_level
+                                    + " Skill Point!"
                     )
             );
         }
 
+
         XP.put(id, currentXp);
         LEVEL.put(id, currentLevel);
 
-        player.sendSystemMessage(
-                Component.literal(
-                        "Resonance XP: "
-                                + currentXp
-                                + " / "
-                                + BalanceDataLoader.progression.xp_to_level_2
-                )
-        );
+
+        // ==========================================
+        // DISPLAY PROGRESS
+        // ==========================================
+
+        if (currentLevel < requirements.length) {
+
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Resonance XP: "
+                                    + currentXp
+                                    + " / "
+                                    + requirements[currentLevel]
+                                    + " | Level "
+                                    + currentLevel
+                    )
+            );
+
+        } else {
+
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Resonance XP: "
+                                    + currentXp
+                                    + " | Level "
+                                    + currentLevel
+                                    + " (MAX)"
+                    )
+            );
+        }
+
+
+        SkillStateSync.syncToClient(player);
     }
+
 
     public static int getSkillPoints(ServerPlayer player) {
 
@@ -69,6 +120,25 @@ public class ResonanceProgression {
                 0
         );
     }
+
+
+    public static int getLevel(ServerPlayer player) {
+
+        return LEVEL.getOrDefault(
+                player.getUUID(),
+                1
+        );
+    }
+
+
+    public static int getXp(ServerPlayer player) {
+
+        return XP.getOrDefault(
+                player.getUUID(),
+                0
+        );
+    }
+
 
     public static boolean spendSkillPoints(
             ServerPlayer player,
@@ -80,6 +150,10 @@ public class ResonanceProgression {
         int current =
                 SKILL_POINTS.getOrDefault(id, 0);
 
+        if (amount < 0) {
+            return false;
+        }
+
         if (current < amount) {
             return false;
         }
@@ -89,6 +163,12 @@ public class ResonanceProgression {
                 current - amount
         );
 
+        SkillStateSync.syncToClient(player);
+
         return true;
+    }
+
+
+    private ResonanceProgression() {
     }
 }

@@ -31,7 +31,8 @@ public class CorruptedBioSlime extends Slime {
             return;
         }
 
-        if (BalanceDataLoader.entityHealth == null) {
+        if (BalanceDataLoader.entityTiers == null
+                || BalanceDataLoader.corruptedBioSlime == null) {
             return;
         }
 

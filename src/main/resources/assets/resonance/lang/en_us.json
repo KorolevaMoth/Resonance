@@ -13,7 +13,8 @@
 
   "entity.resonance.corrupted_bio_slime": "Corrupted Bio-Slime",
   "item.resonance.corrupted_bio_slime_spawn_egg": "Corrupted Bio-Slime Spawn Egg",
-  "key.resonance.blade_resonance": "Blade Resonance",
-  "key.resonance.unlock_blade_resonance": "Unlock Blade Resonance",
+
+  "key.resonance.blade_resonance": "Use Active Skill",
+  "key.resonance.open_skill_tree": "Open Skill Tree",
   "key.categories.resonance": "Resonance"
 }

@@ -1,3 +1,15 @@
 {
-  "xp_to_level_2": 100
+  "xp_requirements": [
+    0,
+    100,
+    220,
+    364,
+    538,
+    746,
+    996,
+    1296,
+    1656,
+    2088
+  ],
+  "skill_points_per_level": 1
 }

@@ -2,9 +2,11 @@ package kmoth.resonance.data;
 
 import com.google.gson.Gson;
 import kmoth.resonance.entity.CorruptedBioSlimeData;
-import kmoth.resonance.entity.EntityHealthData;
+import kmoth.resonance.entity.EntityTierData;
 import kmoth.resonance.progression.ProgressionData;
 import kmoth.resonance.skill.BladeResonanceData;
+import kmoth.resonance.skill.PulseStepData;
+import kmoth.resonance.skill.ResonantGuardData;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,8 +17,10 @@ public class BalanceDataLoader {
 
     public static BladeResonanceData bladeResonance;
     public static ProgressionData progression;
-    public static EntityHealthData entityHealth;
+    public static EntityTierData entityTiers;
     public static CorruptedBioSlimeData corruptedBioSlime;
+    public static PulseStepData pulseStep;
+    public static ResonantGuardData resonantGuard;
 
     public static void load() {
 
@@ -52,6 +56,65 @@ public class BalanceDataLoader {
                     "[Resonance] Blade Resonance data loaded."
             );
 
+            // ==========================================
+            // PULSE STEP
+            // ==========================================
+
+            InputStream pulseStepStream =
+                    BalanceDataLoader.class.getResourceAsStream(
+                            "/data/resonance/balance/pulse_step.json"
+                    );
+
+            if (pulseStepStream == null) {
+                throw new RuntimeException(
+                        "Could not find pulse_step.json"
+                );
+            }
+
+            InputStreamReader pulseStepReader =
+                    new InputStreamReader(pulseStepStream);
+
+            pulseStep =
+                    GSON.fromJson(
+                            pulseStepReader,
+                            PulseStepData.class
+                    );
+
+            pulseStepReader.close();
+
+            System.out.println(
+                    "[Resonance] Pulse Step data loaded."
+            );
+
+            // ==========================================
+            // RESONANT GUARD
+            // ==========================================
+
+            InputStream resonantGuardStream =
+                    BalanceDataLoader.class.getResourceAsStream(
+                            "/data/resonance/balance/resonant_guard.json"
+                    );
+
+            if (resonantGuardStream == null) {
+                throw new RuntimeException(
+                        "Could not find resonant_guard.json"
+                );
+            }
+
+            InputStreamReader resonantGuardReader =
+                    new InputStreamReader(resonantGuardStream);
+
+            resonantGuard =
+                    GSON.fromJson(
+                            resonantGuardReader,
+                            ResonantGuardData.class
+                    );
+
+            resonantGuardReader.close();
+
+            System.out.println(
+                    "[Resonance] Resonant Guard data loaded."
+            );
 
             // ==========================================
             // PROGRESSION
@@ -85,33 +148,33 @@ public class BalanceDataLoader {
 
 
             // ==========================================
-            // ENTITY HEALTH TIERS
+            // ENTITY TIERS
             // ==========================================
 
-            InputStream entityHealthStream =
+            InputStream entityTierStream =
                     BalanceDataLoader.class.getResourceAsStream(
-                            "/data/resonance/balance/entity_health.json"
+                            "/data/resonance/balance/entity_tiers.json"
                     );
 
-            if (entityHealthStream == null) {
+            if (entityTierStream == null) {
                 throw new RuntimeException(
-                        "Could not find entity_health.json"
+                        "Could not find entity_tiers.json"
                 );
             }
 
-            InputStreamReader entityHealthReader =
-                    new InputStreamReader(entityHealthStream);
+            InputStreamReader entityTierReader =
+                    new InputStreamReader(entityTierStream);
 
-            entityHealth =
+            entityTiers =
                     GSON.fromJson(
-                            entityHealthReader,
-                            EntityHealthData.class
+                            entityTierReader,
+                            EntityTierData.class
                     );
 
-            entityHealthReader.close();
+            entityTierReader.close();
 
             System.out.println(
-                    "[Resonance] Entity health data loaded."
+                    "[Resonance] Entity tier data loaded."
             );
 
 
@@ -157,12 +220,27 @@ public class BalanceDataLoader {
 
             System.out.println(
                     "[Resonance] XP to Level 2: "
-                            + progression.xp_to_level_2
+                            + progression.xp_requirements[1]
             );
 
             System.out.println(
-                    "[Resonance] Standard entity health: "
-                            + entityHealth.standard_health
+                    "[Resonance] Weak tier health: "
+                            + entityTiers.weak.health
+            );
+
+            System.out.println(
+                    "[Resonance] Weak tier XP: "
+                            + entityTiers.weak.xp
+            );
+
+            System.out.println(
+                    "[Resonance] Corrupted Bio-Slime health: "
+                            + corruptedBioSlime.getMaxHealth()
+            );
+
+            System.out.println(
+                    "[Resonance] Corrupted Bio-Slime XP: "
+                            + corruptedBioSlime.getXpReward()
             );
 
             System.out.println(

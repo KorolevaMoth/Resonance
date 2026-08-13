@@ -20,9 +20,9 @@ public class ModKeyMappings {
                     GLFW.GLFW_KEY_R,
                     "key.categories.resonance"
             );
-    public static final KeyMapping UNLOCK_BLADE_RESONANCE =
+    public static final KeyMapping OPEN_SKILL_TREE =
             new KeyMapping(
-                    "key.resonance.unlock_blade_resonance",
+                    "key.resonance.open_skill_tree",
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_U,
                     "key.categories.resonance"
@@ -33,6 +33,6 @@ public class ModKeyMappings {
             RegisterKeyMappingsEvent event
     ) {
         event.register(BLADE_RESONANCE);
-        event.register(UNLOCK_BLADE_RESONANCE);
+        event.register(OPEN_SKILL_TREE);
     }
 }

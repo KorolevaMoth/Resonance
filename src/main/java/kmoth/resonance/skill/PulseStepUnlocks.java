@@ -1,59 +1,73 @@
 package kmoth.resonance.skill;
 
 import kmoth.resonance.data.BalanceDataLoader;
+import kmoth.resonance.network.SkillStateSync;
 import kmoth.resonance.progression.ResonanceProgression;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import kmoth.resonance.network.SkillStateSync;
 
-public class BladeResonanceUnlocks {
+public class PulseStepUnlocks {
 
     public static boolean isUnlocked(ServerPlayer player) {
 
         return PlayerSkillState.isUnlocked(
                 player,
-                ResonanceSkill.BLADE_RESONANCE
+                ResonanceSkill.PULSE_STEP
         );
     }
 
     public static void tryUnlock(ServerPlayer player) {
 
-        // ==========================================
-        // ALREADY UNLOCKED -> EQUIP
-        // ==========================================
-
+        // Already unlocked -> equip it.
         if (isUnlocked(player)) {
 
             PlayerSkillState.equip(
                     player,
-                    ResonanceSkill.BLADE_RESONANCE
-
+                    ResonanceSkill.PULSE_STEP
             );
+
             SkillStateSync.syncToClient(player);
 
             player.sendSystemMessage(
                     Component.literal(
-                            "Blade Resonance equipped."
+                            "Pulse Step equipped."
                     )
             );
 
             return;
         }
 
+        // Blade Resonance is the prerequisite.
+        if (!PlayerSkillState.isUnlocked(
+                player,
+                ResonanceSkill.BLADE_RESONANCE
+        )) {
 
-        // ==========================================
-        // GET DATA-DRIVEN COST
-        // ==========================================
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Blade Resonance must be unlocked first."
+                    )
+            );
+
+            return;
+        }
 
         int cost =
                 BalanceDataLoader
-                        .bladeResonance
+                        .pulseStep
                         .skill_point_cost;
 
+        // Protect against invalid balance data.
+        if (cost < 0) {
 
-        // ==========================================
-        // ATTEMPT PURCHASE
-        // ==========================================
+            player.sendSystemMessage(
+                    Component.literal(
+                            "Pulse Step has an invalid skill-point cost."
+                    )
+            );
+
+            return;
+        }
 
         boolean success =
                 ResonanceProgression.spendSkillPoints(
@@ -66,7 +80,7 @@ public class BladeResonanceUnlocks {
             player.sendSystemMessage(
                     Component.literal(
                             "Not enough Skill Points. "
-                                    + "Blade Resonance costs "
+                                    + "Pulse Step costs "
                                     + cost
                                     + "."
                     )
@@ -75,39 +89,27 @@ public class BladeResonanceUnlocks {
             return;
         }
 
-
-        // ==========================================
-        // UNLOCK
-        // ==========================================
-
         PlayerSkillState.unlock(
                 player,
-                ResonanceSkill.BLADE_RESONANCE
+                ResonanceSkill.PULSE_STEP
         );
-
-
-        // ==========================================
-        // AUTO-EQUIP
-        // ==========================================
 
         PlayerSkillState.equip(
                 player,
-                ResonanceSkill.BLADE_RESONANCE
+                ResonanceSkill.PULSE_STEP
         );
 
         SkillStateSync.syncToClient(player);
 
-
         player.sendSystemMessage(
                 Component.literal(
-                        "Blade Resonance unlocked and equipped "
-                                + "for "
+                        "Pulse Step unlocked and equipped for "
                                 + cost
                                 + " Skill Point(s)!"
                 )
         );
     }
 
-    private BladeResonanceUnlocks() {
+    private PulseStepUnlocks() {
     }
 }

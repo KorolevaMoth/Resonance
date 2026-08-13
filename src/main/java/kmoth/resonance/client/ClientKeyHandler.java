@@ -1,12 +1,12 @@
 package kmoth.resonance.client;
 
 import kmoth.resonance.network.BladeResonancePayload;
-import kmoth.resonance.network.UnlockBladeResonancePayload;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import kmoth.resonance.network.RequestSkillStatePayload;
 
 @EventBusSubscriber(modid = "resonance")
 public class ClientKeyHandler {
@@ -20,6 +20,10 @@ public class ClientKeyHandler {
             return;
         }
 
+        // ==========================================
+        // R = USE ACTIVE SKILL
+        // ==========================================
+
         while (ModKeyMappings.BLADE_RESONANCE.consumeClick()) {
 
             PacketDistributor.sendToServer(
@@ -27,10 +31,21 @@ public class ClientKeyHandler {
             );
         }
 
-        while (ModKeyMappings.UNLOCK_BLADE_RESONANCE.consumeClick()) {
 
+        // ==========================================
+        // U = OPEN SKILL TREE
+        // ==========================================
+
+        while (ModKeyMappings.OPEN_SKILL_TREE.consumeClick()) {
+
+            // Ask the server for the player's latest
+            // skill points, unlocked skills, and equipped skill.
             PacketDistributor.sendToServer(
-                    new UnlockBladeResonancePayload()
+                    new RequestSkillStatePayload()
+            );
+
+            minecraft.setScreen(
+                    new SkillTreeScreen()
             );
         }
     }

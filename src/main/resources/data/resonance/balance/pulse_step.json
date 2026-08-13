@@ -1,0 +1,6 @@
+{
+  "cooldown_seconds": 8,
+  "speed_multiplier": 1.5,
+  "duration_seconds": 3,
+  "skill_point_cost": 1
+}

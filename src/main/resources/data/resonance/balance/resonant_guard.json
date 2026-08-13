@@ -1,0 +1,6 @@
+{
+  "cooldown_seconds": 12,
+  "damage_reduction": 0.40,
+  "duration_seconds": 4,
+  "skill_point_cost": 1
+}

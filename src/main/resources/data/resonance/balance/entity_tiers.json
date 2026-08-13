@@ -1,0 +1,18 @@
+{
+  "weak": {
+    "health": 10,
+    "xp": 20
+  },
+  "standard": {
+    "health": 20,
+    "xp": 30
+  },
+  "elite": {
+    "health": 40,
+    "xp": 75
+  },
+  "boss": {
+    "health": 100,
+    "xp": 200
+  }
+}
