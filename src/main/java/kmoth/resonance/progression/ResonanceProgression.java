@@ -2,29 +2,35 @@ package kmoth.resonance.progression;
 
 import kmoth.resonance.data.BalanceDataLoader;
 import kmoth.resonance.network.SkillStateSync;
+import kmoth.resonance.player.ModAttachments;
+import kmoth.resonance.player.ResonancePlayerData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class ResonanceProgression {
 
-    private static final Map<UUID, Integer> XP = new HashMap<>();
-    private static final Map<UUID, Integer> LEVEL = new HashMap<>();
-    private static final Map<UUID, Integer> SKILL_POINTS = new HashMap<>();
+    private static ResonancePlayerData getData(
+            ServerPlayer player
+    ) {
+        return player.getData(
+                ModAttachments.RESONANCE_PLAYER_DATA.get()
+        );
+    }
 
 
-    public static void addXp(ServerPlayer player, int amount) {
+    public static void addXp(
+            ServerPlayer player,
+            int amount
+    ) {
 
-        UUID id = player.getUUID();
+        ResonancePlayerData data =
+                getData(player);
 
         int currentXp =
-                XP.getOrDefault(id, 0);
+                data.getXp();
 
         int currentLevel =
-                LEVEL.getOrDefault(id, 1);
+                data.getLevel();
 
         currentXp += amount;
 
@@ -34,22 +40,20 @@ public class ResonanceProgression {
         // ==========================================
 
         int[] requirements =
-                BalanceDataLoader.progression.xp_requirements;
+                BalanceDataLoader
+                        .progression
+                        .xp_requirements;
 
         while (
                 currentLevel < requirements.length
-                        && currentXp >= requirements[currentLevel]
+                        && currentXp
+                        >= requirements[currentLevel]
         ) {
 
             currentLevel++;
 
-            int currentSkillPoints =
-                    SKILL_POINTS.getOrDefault(id, 0);
-
-            SKILL_POINTS.put(
-                    id,
-                    currentSkillPoints
-                            + BalanceDataLoader
+            data.addSkillPoints(
+                    BalanceDataLoader
                             .progression
                             .skill_points_per_level
             );
@@ -74,8 +78,8 @@ public class ResonanceProgression {
         }
 
 
-        XP.put(id, currentXp);
-        LEVEL.put(id, currentLevel);
+        data.setXp(currentXp);
+        data.setLevel(currentLevel);
 
 
         // ==========================================
@@ -113,30 +117,30 @@ public class ResonanceProgression {
     }
 
 
-    public static int getSkillPoints(ServerPlayer player) {
+    public static int getSkillPoints(
+            ServerPlayer player
+    ) {
 
-        return SKILL_POINTS.getOrDefault(
-                player.getUUID(),
-                0
-        );
+        return getData(player)
+                .getSkillPoints();
     }
 
 
-    public static int getLevel(ServerPlayer player) {
+    public static int getLevel(
+            ServerPlayer player
+    ) {
 
-        return LEVEL.getOrDefault(
-                player.getUUID(),
-                1
-        );
+        return getData(player)
+                .getLevel();
     }
 
 
-    public static int getXp(ServerPlayer player) {
+    public static int getXp(
+            ServerPlayer player
+    ) {
 
-        return XP.getOrDefault(
-                player.getUUID(),
-                0
-        );
+        return getData(player)
+                .getXp();
     }
 
 
@@ -145,21 +149,21 @@ public class ResonanceProgression {
             int amount
     ) {
 
-        UUID id = player.getUUID();
-
-        int current =
-                SKILL_POINTS.getOrDefault(id, 0);
-
         if (amount < 0) {
             return false;
         }
+
+        ResonancePlayerData data =
+                getData(player);
+
+        int current =
+                data.getSkillPoints();
 
         if (current < amount) {
             return false;
         }
 
-        SKILL_POINTS.put(
-                id,
+        data.setSkillPoints(
                 current - amount
         );
 

@@ -1,71 +1,79 @@
 package kmoth.resonance.skill;
 
+import kmoth.resonance.player.ModAttachments;
+import kmoth.resonance.player.ResonancePlayerData;
 import net.minecraft.server.level.ServerPlayer;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 public class PlayerSkillState {
 
-    private static final Map<UUID, Set<ResonanceSkill>> UNLOCKED =
-            new HashMap<>();
+    private static ResonancePlayerData getData(
+            ServerPlayer player
+    ) {
 
-    private static final Map<UUID, ResonanceSkill> EQUIPPED =
-            new HashMap<>();
+        return player.getData(
+                ModAttachments
+                        .RESONANCE_PLAYER_DATA
+                        .get()
+        );
+    }
+
 
     public static boolean isUnlocked(
             ServerPlayer player,
             ResonanceSkill skill
     ) {
 
-        return UNLOCKED
-                .getOrDefault(
-                        player.getUUID(),
-                        EnumSet.noneOf(ResonanceSkill.class)
-                )
-                .contains(skill);
+        return getData(player)
+                .isSkillUnlocked(skill);
     }
+
 
     public static void unlock(
             ServerPlayer player,
             ResonanceSkill skill
     ) {
 
-        UNLOCKED
-                .computeIfAbsent(
-                        player.getUUID(),
-                        id -> EnumSet.noneOf(ResonanceSkill.class)
-                )
-                .add(skill);
+        ResonancePlayerData data =
+                getData(player);
+
+        data.unlockSkill(skill);
+
+        player.setData(
+                ModAttachments
+                        .RESONANCE_PLAYER_DATA
+                        .get(),
+                data
+        );
     }
+
 
     public static void equip(
             ServerPlayer player,
             ResonanceSkill skill
     ) {
 
-        if (!isUnlocked(player, skill)) {
-            return;
-        }
+        ResonancePlayerData data =
+                getData(player);
 
-        EQUIPPED.put(
-                player.getUUID(),
-                skill
+        data.equipSkill(skill);
+
+        player.setData(
+                ModAttachments
+                        .RESONANCE_PLAYER_DATA
+                        .get(),
+                data
         );
     }
+
 
     public static ResonanceSkill getEquipped(
             ServerPlayer player
     ) {
 
-        return EQUIPPED.getOrDefault(
-                player.getUUID(),
-                ResonanceSkill.NONE
-        );
+        return getData(player)
+                .getEquippedSkill();
     }
+
 
     private PlayerSkillState() {
     }

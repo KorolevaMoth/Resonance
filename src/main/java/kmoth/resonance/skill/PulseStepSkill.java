@@ -65,7 +65,11 @@ public class PulseStepSkill {
         }
 
         int durationTicks =
-                BalanceDataLoader.pulseStep.duration_seconds * 20;
+                (int) Math.round(
+                        BalanceDataLoader
+                                .pulseStep
+                                .duration_seconds * 20.0
+                );
 
         double multiplier =
                 BalanceDataLoader.pulseStep.speed_multiplier;

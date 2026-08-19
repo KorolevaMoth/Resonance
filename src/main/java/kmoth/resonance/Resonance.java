@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import kmoth.resonance.player.ModAttachments;
 import kmoth.resonance.entity.ModEntities;
 import kmoth.resonance.item.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -73,6 +74,10 @@ public class Resonance {
         BalanceDataLoader.load();
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+
+        // For persistant data
+        ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
+
         ModEntities.ENTITY_TYPES.register(modEventBus);
         // Register entity types for entity creation/loading
         ModItems.ITEMS.register(modEventBus);
